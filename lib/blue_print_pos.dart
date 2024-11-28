@@ -202,7 +202,7 @@ class BluePrintPos {
 
         for (int i = 0; i < chunks.length; i += 1) {
           await characteristic.write(chunks[i], withoutResponse: true);
-          sleep(const Duration(milliseconds: 20));
+          // sleep(const Duration(milliseconds: 20));
         }
 
 
