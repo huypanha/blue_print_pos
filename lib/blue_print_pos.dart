@@ -190,7 +190,22 @@ class BluePrintPos {
           (flutter_blue.BluetoothCharacteristic bluetoothCharacteristic) =>
               bluetoothCharacteristic.properties.write,
         );
-        await characteristic.write(byteBuffer, withoutResponse: true);
+
+        final int len = byteBuffer.length;
+        const int chunkSizeBytes = 182;
+        final List<List<int>> chunks = <List<int>>[];
+
+        for (int i = 0; i < len; i += chunkSizeBytes) {
+          final int end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
+          chunks.add(byteBuffer.sublist(i, end));
+        }
+
+        for (int i = 0; i < chunks.length; i += 1) {
+          await characteristic.write(chunks[i], withoutResponse: true);
+          sleep(const Duration(milliseconds: 20));
+        }
+
+
       }
     } on Exception catch (error) {
       print('$runtimeType - Error $error');
