@@ -214,7 +214,7 @@ class BluePrintPos {
     final CapabilityProfile profile = await CapabilityProfile.load();
     final Generator generator = Generator(paperSize, profile);
     final img.Image _resize = img.copyResize(
-      img.decodeImage(Uint8List.fromList(bytes))!,
+      img.decodeImage(Uint8List.fromList(data))!,
       width: customWidth > 0 ? customWidth : paperSize.width,
     );
     if (useRaster) {
