@@ -8,7 +8,6 @@ import android.os.Looper
 import android.view.WindowInsets
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import com.ayeee.blue_print_pos.extension.toBitmap
 import com.ayeee.blue_print_pos.extension.toByteArray

@@ -51,5 +51,4 @@ android {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.annotation:annotation:1.9.1'
-    implementation files('/Users/huypanha/dev/flutter/bin/cache/artifacts/engine/android-arm64/flutter.jar')
 }
