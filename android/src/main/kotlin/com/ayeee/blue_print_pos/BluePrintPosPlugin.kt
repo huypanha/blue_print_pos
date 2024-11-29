@@ -9,6 +9,7 @@ import android.view.WindowInsets
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
 import com.ayeee.blue_print_pos.extension.toBitmap
 import com.ayeee.blue_print_pos.extension.toByteArray
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -30,7 +31,7 @@ class BluePrintPosPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var context: Context
     private lateinit var webView: WebView
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         val viewID = "webview-view-type"
         flutterPluginBinding.platformViewRegistry.registerViewFactory(viewID, FLNativeViewFactory())
 
@@ -39,7 +40,8 @@ class BluePrintPosPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         context = flutterPluginBinding.applicationContext
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    @RequiresApi(Build.VERSION_CODES.R)
+    override fun onMethodCall(call: MethodCall, result: Result) {
         val arguments = call.arguments as Map<*, *>
         val content = arguments["content"] as String
         val duration = arguments["duration"] as Double?
@@ -55,8 +57,8 @@ class BluePrintPosPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 dWidth = windowMetrics.bounds.width() - insets.left - insets.right
                 dHeight = windowMetrics.bounds.height() - insets.bottom - insets.top
             } else {
-                dWidth = this.activity.window.windowManager.defaultDisplay.width
-                dHeight = this.activity.window.windowManager.defaultDisplay.height
+                dWidth = this.activity.window.windowManager.currentWindowMetrics.bounds.width()
+                dHeight = this.activity.window.windowManager.currentWindowMetrics.bounds.height()
             }
             Logger.log("\ndwidth : $dWidth")
             Logger.log("\ndheight : $dHeight")
@@ -131,7 +133,7 @@ class BluePrintPosPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         Logger.log("onDetachedFromActivity")
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
 }
