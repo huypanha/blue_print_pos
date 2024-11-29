@@ -8,7 +8,6 @@ import 'package:blue_print_pos/scanner/blue_scanner.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart' as blue_thermal;
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart' as flutter_blue;
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:image/image.dart' as img;
 import 'package:qr_flutter/qr_flutter.dart';
@@ -26,7 +25,7 @@ class BluePrintPos {
   blue_thermal.BlueThermalPrinter? _bluetoothAndroid;
 
   /// Bluetooth Device model for iOS
-  flutter_blue.BluetoothDevice? _bluetoothDeviceIOS;
+  BluetoothDevice? _bluetoothDeviceIOS;
 
   /// State to get bluetooth is connected
   bool _isConnected = false;
@@ -58,9 +57,9 @@ class BluePrintPos {
                 selectedDevice?.name ?? '', selectedDevice?.address ?? '');
         await _bluetoothAndroid?.connect(bluetoothDeviceAndroid);
       } else if (Platform.isIOS) {
-        _bluetoothDeviceIOS = flutter_blue.BluetoothDevice.fromId(selectedDevice?.address ?? '');
-        final int deviceConnectedIndex = FlutterBluePlus.connectedDevices.indexWhere((flutter_blue.BluetoothDevice bluetoothDevice) {
-          return bluetoothDevice.remoteId == _bluetoothDeviceIOS?.remoteId.str;
+        _bluetoothDeviceIOS = BluetoothDevice.fromId(selectedDevice?.address ?? '');
+        final int deviceConnectedIndex = FlutterBluePlus.connectedDevices.indexWhere((BluetoothDevice bluetoothDevice) {
+          return bluetoothDevice.remoteId == _bluetoothDeviceIOS?.remoteId;
         });
         if (deviceConnectedIndex < 0) {
           await _bluetoothDeviceIOS?.connect();
@@ -179,26 +178,25 @@ class BluePrintPos {
       if (Platform.isAndroid) {
         _bluetoothAndroid?.writeBytes(Uint8List.fromList(byteBuffer));
       } else if (Platform.isIOS) {
-        final List<flutter_blue.BluetoothService> bluetoothServices =
-            await _bluetoothDeviceIOS?.discoverServices() ??
-                <flutter_blue.BluetoothService>[];
-        final flutter_blue.BluetoothService bluetoothService =
-        bluetoothServices.firstWhere((flutter_blue.BluetoothService service) => service.isPrimary);
-        final flutter_blue.BluetoothCharacteristic characteristic =
-        bluetoothService.characteristics.firstWhere((flutter_blue.BluetoothCharacteristic c) => c.properties.write);
-
+        final List<BluetoothService> bluetoothServices =
+            await _bluetoothDeviceIOS?.discoverServices() ?? <BluetoothService>[];
+        final BluetoothService bluetoothService =
+        bluetoothServices.firstWhere((BluetoothService service) => service.isPrimary);
+        final BluetoothCharacteristic characteristic =
+        bluetoothService.characteristics.firstWhere((BluetoothCharacteristic c) => c.properties.write);
+        await characteristic.write(byteBuffer, withoutResponse: true);
         // Split data into chunks of 182 bytes
-        const int chunkSize = 182;
-        for (int i = 0; i < byteBuffer.length; i += chunkSize) {
-          // Get the current chunk
-          final List<int> chunk = byteBuffer.sublist(
-            i,
-            i + chunkSize > byteBuffer.length ? byteBuffer.length : i + chunkSize,
-          );
-
-          // Write chunk to the characteristic
-          await characteristic.write(chunk, withoutResponse: true);
-        }
+        // const int chunkSize = 182;
+        // for (int i = 0; i < byteBuffer.length; i += chunkSize) {
+        //   // Get the current chunk
+        //   final List<int> chunk = byteBuffer.sublist(
+        //     i,
+        //     i + chunkSize > byteBuffer.length ? byteBuffer.length : i + chunkSize,
+        //   );
+        //
+        //   // Write chunk to the characteristic
+        //   await characteristic.write(chunk, withoutResponse: true);
+        // }
       }
     } on Exception catch (error) {
       print('$runtimeType - Error $error');
