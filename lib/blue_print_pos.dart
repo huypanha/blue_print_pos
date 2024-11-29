@@ -170,11 +170,12 @@ class BluePrintPos {
     try {
       if (selectedDevice == null) {
         print('$runtimeType - Device not selected');
-        return Future<void>.value(null);
+        return;
       }
       if (!_isConnected && selectedDevice != null) {
         await connect(selectedDevice!);
       }
+
       if (Platform.isAndroid) {
         _bluetoothAndroid?.writeBytes(Uint8List.fromList(byteBuffer));
       } else if (Platform.isIOS) {
@@ -182,29 +183,22 @@ class BluePrintPos {
             await _bluetoothDeviceIOS?.discoverServices() ??
                 <flutter_blue.BluetoothService>[];
         final flutter_blue.BluetoothService bluetoothService =
-            bluetoothServices.firstWhere(
-          (flutter_blue.BluetoothService service) => service.isPrimary,
-        );
+        bluetoothServices.firstWhere((flutter_blue.BluetoothService service) => service.isPrimary);
         final flutter_blue.BluetoothCharacteristic characteristic =
-            bluetoothService.characteristics.firstWhere(
-          (flutter_blue.BluetoothCharacteristic bluetoothCharacteristic) =>
-              bluetoothCharacteristic.properties.write,
-        );
+        bluetoothService.characteristics.firstWhere((flutter_blue.BluetoothCharacteristic c) => c.properties.write);
 
-        final int len = byteBuffer.length;
-        const int chunkSizeBytes = 182;
-        final List<List<int>> chunks = <List<int>>[];
+        // Split data into chunks of 182 bytes
+        const int chunkSize = 182;
+        for (int i = 0; i < byteBuffer.length; i += chunkSize) {
+          // Get the current chunk
+          final List<int> chunk = byteBuffer.sublist(
+            i,
+            i + chunkSize > byteBuffer.length ? byteBuffer.length : i + chunkSize,
+          );
 
-        for (int i = 0; i < len; i += chunkSizeBytes) {
-          final int end = (i + chunkSizeBytes < len) ? i + chunkSizeBytes : len;
-          chunks.add(byteBuffer.sublist(i, end));
+          // Write chunk to the characteristic
+          await characteristic.write(chunk, withoutResponse: true);
         }
-
-        for (int i = 0; i < chunks.length; i += 1) {
-          await characteristic.write(chunks[i], withoutResponse: true);
-        }
-
-
       }
     } on Exception catch (error) {
       print('$runtimeType - Error $error');
