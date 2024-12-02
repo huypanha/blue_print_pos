@@ -114,4 +114,9 @@ ${CollectionStyle.all}
     );
     _data += image.html;
   }
+
+  /// Insert html directly into receipt to print
+  void addHTML(String html) {
+    _data += html;
+  }
 }
