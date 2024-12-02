@@ -184,19 +184,20 @@ class BluePrintPos {
         bluetoothServices.firstWhere((BluetoothService service) => service.isPrimary);
         final BluetoothCharacteristic characteristic =
         bluetoothService.characteristics.firstWhere((BluetoothCharacteristic c) => c.properties.write);
-        await characteristic.write(byteBuffer, withoutResponse: true);
+
         // Split data into chunks of 182 bytes
-        // const int chunkSize = 182;
-        // for (int i = 0; i < byteBuffer.length; i += chunkSize) {
-        //   // Get the current chunk
-        //   final List<int> chunk = byteBuffer.sublist(
-        //     i,
-        //     i + chunkSize > byteBuffer.length ? byteBuffer.length : i + chunkSize,
-        //   );
-        //
-        //   // Write chunk to the characteristic
-        //   await characteristic.write(chunk, withoutResponse: true);
-        // }
+        const int chunkSize = 182;
+        final int len = byteBuffer.length;
+        for (int i = 0; i < len; i += chunkSize) {
+          // Get the current chunk
+          final List<int> chunk = byteBuffer.sublist(
+            i,
+            i + chunkSize > len ? len : i + chunkSize,
+          );
+
+          // Write chunk to the characteristic
+          await characteristic.write(chunk, withoutResponse: true);
+        }
       }
     } on Exception catch (error) {
       print('$runtimeType - Error $error');
