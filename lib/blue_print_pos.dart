@@ -117,7 +117,7 @@ class BluePrintPos {
       useCut: useCut,
       useRaster: useRaster,
     );
-    _printProcess(byteBuffer);
+    await _printProcess(byteBuffer);
   }
 
   /// This method only for print image with parameter [bytes] in List<int>
@@ -140,7 +140,7 @@ class BluePrintPos {
       useRaster: useRaster,
       paperSize: paperSize,
     );
-    _printProcess(byteBuffer);
+    await _printProcess(byteBuffer);
   }
 
   /// This method only for print QR, only pass value on parameter [data]
@@ -154,7 +154,7 @@ class BluePrintPos {
     bool useCut = false,
   }) async {
     final List<int> byteBuffer = await _getQRImage(data, size.toDouble());
-    printReceiptImage(
+    await printReceiptImage(
       byteBuffer,
       width: size,
       feedCount: feedCount,

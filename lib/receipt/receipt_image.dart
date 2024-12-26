@@ -14,7 +14,7 @@ class ReceiptImage {
 
   String get html => '''
     <div class="$_alignmentStyleHTML">
-      <img src ="data:image/png;base64,$data" width="$width"/>
+      <img src ="data:image/png;base64,$data" width="$width" alt="image"/>
     </div>
     ''';
 
