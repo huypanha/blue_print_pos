@@ -4,14 +4,15 @@ PODS:
   - blue_thermal_printer (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - flutter_blue_plus (0.0.1):
+  - flutter_blue_plus_darwin (0.0.2):
     - Flutter
+    - FlutterMacOS
 
 DEPENDENCIES:
   - blue_print_pos (from `.symlinks/plugins/blue_print_pos/ios`)
   - blue_thermal_printer (from `.symlinks/plugins/blue_thermal_printer/ios`)
   - Flutter (from `Flutter`)
-  - flutter_blue_plus (from `.symlinks/plugins/flutter_blue_plus/ios`)
+  - flutter_blue_plus_darwin (from `.symlinks/plugins/flutter_blue_plus_darwin/darwin`)
 
 EXTERNAL SOURCES:
   blue_print_pos:
@@ -20,14 +21,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/blue_thermal_printer/ios"
   Flutter:
     :path: Flutter
-  flutter_blue_plus:
-    :path: ".symlinks/plugins/flutter_blue_plus/ios"
+  flutter_blue_plus_darwin:
+    :path: ".symlinks/plugins/flutter_blue_plus_darwin/darwin"
 
 SPEC CHECKSUMS:
-  blue_print_pos: 23e8b4bede0fc07cd75b3257783523ca332bf3cb
-  blue_thermal_printer: c83405103d2c17f8d67aaa43fcff94df5d616a66
+  blue_print_pos: 1e2bb2d750c2764c7e57d0b3ff7da6421d4aa659
+  blue_thermal_printer: d859595ae87fd0d2317a7f023d32551db13775df
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_blue_plus: 4837da7d00cf5d441fdd6635b3a57f936778ea96
+  flutter_blue_plus_darwin: 09444a26fb6bdef523e55b68fc1c59af5a877ea6
 
 PODFILE CHECKSUM: 4e8f8b2be68aeea4c0d5beb6ff1e79fface1d048
 
